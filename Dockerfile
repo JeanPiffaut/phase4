@@ -1,26 +1,27 @@
-# Use an official Maven image to build the project with OpenJDK 11
+# Usar una imagen oficial de Maven para construir el proyecto con OpenJDK 11
 FROM maven:3.8.5-openjdk-11 AS build
 
-# Set the working directory to the project root
+# Establecer el directorio de trabajo al root del proyecto
 WORKDIR /app
 
-# Copy the project files to the Docker image
+# Copiar los archivos del proyecto al contenedor
 COPY . .
 
-# Navigate to the specific subproject and package the application
-RUN mvn clean package -DskipTests
+# Navegar al subproyecto específico y empaquetar la aplicación
+WORKDIR /app
+RUN mvn clean package
 
-# Use an official Tomcat image as a parent image
+# Usar una imagen oficial de Tomcat como imagen base para la ejecución
 FROM tomcat:9.0-jdk11-openjdk-slim
 
-# Set the working directory
+# Establecer el directorio de trabajo
 WORKDIR /usr/local/tomcat/webapps
 
-# Copy the WAR file from the build stage
+# Copiar el archivo WAR generado desde la fase de construcción
 COPY --from=build /app/phase4-peppol-server-webapp/target/phase4-peppol-server-webapp-*.war ./ROOT.war
 
-# Expose the port the application runs on
+# Exponer el puerto en el que se ejecutará la aplicación
 EXPOSE 8080
 
-# Start Tomcat server
+# Iniciar el servidor Tomcat
 CMD ["catalina.sh", "run"]
