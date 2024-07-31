@@ -1,0 +1,9 @@
+version: '3'
+services:
+  as4:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - NAME=AS4
+    container_name: as4_server
